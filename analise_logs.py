@@ -5,6 +5,8 @@
 import psycopg2
 
 DataBaseName = "news"
+
+
 def execute_db(query):
 
     """Connect to database for querries"""
@@ -22,23 +24,24 @@ def execute_db(query):
     db.close()
     return rows
 
+
 def popular_articles():
 
-    # Query to answer the taks aswers
-	
+# Query to answer the taks aswers
+
     query = """
         select articles.title, count(log.path) as num
         from log join articles
-        on log.path = CONCAT('/article/', articles.slug) where 
-        log.status = '200 OK' 
-        group by articles.title 
+        on log.path = CONCAT('/article/', articles.slug) where
+        log.status = '200 OK'
+        group by articles.title
         order by num Desc limit 3;
     """
     results = executar_db(query)
 
-	#Printing the query results
+# Printing the query results
 
-    print('The three most popular articles of all time are: \n')
+print('The three most popular articles of all time are: \n')
 
     count = 1
 
@@ -61,7 +64,7 @@ def popular_authors():
         group by authors.name
         order by num Desc limit 3;
     """
-    results = executar_db(query)
+    results = execute_db(query)
 
     # Printing the results of 'def autores_mais_populares()':
     print('The most Popular Authors are: \n')
@@ -78,11 +81,11 @@ def days_with_more_than_1_percent_error():
     query = """
         select to_char(time::date, 'Month DD,YYYY'),
         (count(case when status != '200 OK' then 1 end)*100)::float/
-        count(*) as num from log 
-        group by time::date 
+        count(*) as num from log
+        group by time::date
         order by num desc limit 1;
     """
-    results = executar_db(query)
+    results = execute_db(query)
 
     # Printing the results of 'def dias_com_mais_de_1_por_cento_de_erro()':
 
@@ -93,6 +96,7 @@ def days_with_more_than_1_percent_error():
         errors = str(round(i[1], 1)) + "%" + " errors"
         print(date + " -- " + errors)
 
+	
 # All the results of the querries
 print('Results:')
 print('____________________________________')
